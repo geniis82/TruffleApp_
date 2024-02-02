@@ -1,0 +1,135 @@
+<odoo>
+    <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="truffleapp.tree_view_ordermodel">
+        <field name="name">Orders</field>
+        <field name="model">truffleapp.ordermodel</field>
+        <field name="arch" type="xml">
+        <tree decoration-success="state=='C'">
+            <field name="name"/>
+            <field name="data"/>
+            <field name="client"/>
+            <field name="state"/>
+        </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="truffleapp.form_view_ordermodel">
+        <field name="name">Orders</field>
+        <field name="model">truffleapp.ordermodel</field>
+        <field name="arch" type="xml">
+        <form >
+            <header>
+                <button name="changeStatusC" type="object" string="Comfirm Order" class="oe_highlight" attrs="{'invisible': ['|',('state', '==', 'C'),('state', '==', 'I')]}" confirm="Are you sure to change the state to Confirm?"/>
+                <button name="change_status_i_create_invoice" type="object" string="Invoiced Order" class="oe_highlight" attrs="{'invisible': ['|',('state', '==', 'D'),('state', '==', 'I')]}" confirm="Are you sure to change the state to Invoiced?"/>
+                <field name="state" widget="statusbar"/>
+                <button name="history" type="object" string ="Send to historic" class="oe_highlight" confirm="Are you sure to move all the invoiced orders to history?" attrs="{'invisible': ['|', ('state', '=', 'D'), ('state', '=', 'C')]}"/>
+            </header>
+            <group>
+                <field name="name"/>
+                <field name="data" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                <field name="total_without_iva"/>
+                <field name="iva_percentage" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                <field name="total_amount" />
+                <field string="Products" name="orderLine" widget="one2many_tags" attrs="{'readonly': [('state', '!=', 'D')]}">
+                    <tree>
+                        <!-- Muestra más detalles del producto en la línea de la factura -->
+                        <field name="product" options='{"fields": ["name", "price", "stock"]}'>
+                            <widget name="many2one" options='{"no_create_edit": true}'/>
+                        </field>
+                        <field name="quantity"/>
+                        <field name="weight"/>
+                        <field name="mesure"/>
+                        <field name="price_unit"/>
+                        <field name="price_subtotal"/>
+                    </tree>
+                </field>
+                <field name="client" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+            </group>
+        </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="truffleapp.graph_view_ordermodel">
+        <field name="name">Graph Orders</field>
+        <field name="model">truffleapp.ordermodel</field>
+        <field name="arch" type="xml">
+            <graph type="pie">
+                <field name="client" type="row"/>
+                <field name="data" interval="month"/>
+                <field name="total_amount" type="measure" widget="monetary"/>
+            </graph>
+        </field>
+    </record>  
+
+    <record model="ir.ui.view" id="truffleapp.pivot_view_ordermodel">
+        <field name="name">Order pivot</field>
+        <field name="model">truffleapp.ordermodel</field>
+        <field name="arch" type="xml">
+            <pivot string="Pivot order">
+                <field name="client" type="row"/>
+                <field name="name" type="row"/>
+                <field name="data"/>
+                <field name="iva_percentage"/>
+                <field name="total_amount" type="measure" widget="monetary"/>
+            </pivot>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="truffleapp.search_view_ordermodel">
+        <field name="name">Order Searches</field>
+        <field name="model">truffleapp.ordermodel</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draf" name="state" domain="[('state','=','D')]" />
+                <filter string="Confirm" name="state" domain="[('state','=','C')]" />
+                <filter string="Invoiced" name="state" domain="[('state','=','I')]" />
+                <filter string="History" name="active" domain="[('active','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="truffleapp.order_action_window">
+        <field name="name">Orders</field>
+        <field name="res_model">truffleapp.ordermodel</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="truffleapp.action_server">
+        <field name="name">truffleapp server</field>
+        <field name="model_id" ref="model_truffleapp_truffleapp"/>
+        <field name="state">code</field>
+        <field name="code">
+        action = {
+            "type": "ir.actions.act_window",
+            "view_mode": "tree,form",
+            "res_model": model._name,
+        }
+        </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="truffleapp" id="truffleapp.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="truffleapp.menu_1" parent="truffleapp.menu_root"/>
+    <menuitem name="Menu 2" id="truffleapp.menu_2" parent="truffleapp.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="truffleapp.menu_1_list" parent="truffleapp.menu_1"
+                action="truffleapp.action_window"/>
+    <menuitem name="Server to list" id="truffleapp" parent="truffleapp.menu_2"
+                action="truffleapp.action_server"/>
+-->
+    </data>
+</odoo>

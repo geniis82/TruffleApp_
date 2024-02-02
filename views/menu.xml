@@ -1,0 +1,41 @@
+<odoo>
+    <data>
+        <!-- Top menu item-->
+        <menuitem name="TruffleApp" id="truffleapp.menu_root" web_icon="truffleapp,static/description/icon.png"/>
+
+        <!-- menu categories-->
+        <menuitem name="Category" id="truffleapp.menu_category"
+            parent="truffleapp.menu_root" />
+        <menuitem name="Weight" id="truffleapp.menu_weight"
+            parent="truffleapp.menu_root" />
+        <menuitem name="Quality" id="truffleapp.menu_quality"
+            parent="truffleapp.menu_root" /> 
+        <menuitem name="Product" id="truffleapp.menu_product"
+            parent="truffleapp.menu_root" />
+        <menuitem name="Order" id="truffleapp.menu_order"
+            parent="truffleapp.menu_root" /> 
+        <menuitem name="Invoice" id="truffleapp.menu_factura"
+            parent="truffleapp.menu_root" /> 
+        
+
+        <!--Actions-->
+        <menuitem name="Category" id="truffleapp.menu_category_list"
+            parent="truffleapp.menu_category"
+            action="truffleapp.category_action_window" />
+        <menuitem name="Weight" id="truffleapp.menu_weight_list"
+            parent="truffleapp.menu_weight"
+            action="truffleapp.weight_action_window" />
+        <menuitem name="Quality" id="truffleapp.menu_quality_list"
+            parent="truffleapp.menu_quality"
+            action="truffleapp.quality_action_window" /> 
+        <menuitem name="Product" id="truffleapp.menu_product_list"
+            parent="truffleapp.menu_product"
+            action="truffleapp.product_action_window" />  
+        <menuitem name="Order" id="truffleapp.menu_order_list"
+            parent="truffleapp.menu_order"
+            action="truffleapp.order_action_window" />
+        <menuitem name="Invoice" id="truffleapp.menu_factura_list"
+            parent="truffleapp.menu_factura"
+            action="truffleapp.factura_action_window" /> 
+    </data>
+</odoo>

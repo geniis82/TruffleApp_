@@ -1,0 +1,153 @@
+<odoo>
+    <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="truffleapp.tree_view_facturamodel">
+        <field name="name">Invoice</field>
+        <field name="model">truffleapp.facturamodel</field>
+        <field name="arch" type="xml">
+        <tree decoration-success="state=='C'">
+            <field name="name"/>
+            <field name="date"/>
+            <field name="total_without_iva"/>
+            <field name="iva_percentage"/>
+            <field name="total_amount"/>
+            <field name="clients"/>
+            <field name="state"/>
+        </tree>
+        </field>
+    </record>
+    
+
+    <record model="ir.ui.view" id="truffleapp.form_view_facturamodel">
+        <field name="name">Invoice</field>
+        <field name="model">truffleapp.facturamodel</field>
+        <field name="arch" type="xml" >
+            <form >
+                <header>
+                    <button name="changeStatus" type="object" string="Comfirm Invoice" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'D')]}" confirm="Are you sure to change the state?"/>
+                    <field name="state" widget="statusbar"/>
+                    <button name="history" type="object" string ="Send to historic" class="oe_highlight" confirm="Are you sure to move all the confirm invoiced to history?" attrs="{'invisible': [ ('state', '=', 'D')]}"/>
+                </header>
+                <group >
+                    <field name="name"/>
+                    <field name="date" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                    <field name="total_without_iva"/>
+                    <field name="iva_percentage" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                    <field name="total_amount" />
+                    <!-- <field name="lines" /> -->
+                    <field name="lines" widget="one2many_tags" attrs="{'readonly': [('state', '!=', 'D')]}">
+                        <tree>
+                            <!-- Muestra más detalles del producto en la línea de la factura -->
+                            <field name="product" options='{"fields": ["name", "price", "stock"]}'>
+                                <widget name="many2one" options='{"no_create_edit": true}'/>
+                            </field>
+                            <field name="quantity"/>
+                            <field name="weight"/>
+                            <field name="mesure"/>
+                            <field name="price_unit"/>
+                            <field name="price_subtotal"/>
+                        </tree>
+                    </field>
+                    <field name="clients" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                </group>
+            </form>
+        </field>
+    </record>
+    
+
+
+    <record model="ir.ui.view" id="truffleapp.calendar_view_facturamodel">
+        <field name="name">Calendar Invoices</field>
+        <field name="model">truffleapp.facturamodel</field>
+        <field name="arch" type="xml">
+            <calendar date_start="date" color="clients" event_open_popup="True" mode="month" form_view_id="truffleapp.form_view_facturamodel" quick_add="False">
+                <field name="clients"/>
+                <field name="date"/>
+                <field name ="state"/> 
+            </calendar>
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="truffleapp.graph_view_facturamodel">
+        <field name="name">Graph invoice</field>
+        <field name="model">truffleapp.facturamodel</field>
+        <field name="arch" type="xml">
+            <graph type="pie">
+                <field name="clients" type="row"/>
+                <field name="date" interval="month"/>
+                <field name="total_amount" type="measure" widget="monetary"/>
+            </graph>
+        </field>
+    </record>   
+
+    <record model="ir.ui.view" id="truffleapp.pivot_view_facturamodel">
+        <field name="name">Invoice pivot</field>
+        <field name="model">truffleapp.facturamodel</field>
+        <field name="arch" type="xml">
+            <pivot string="Pivot invoice">
+                <field name="clients" type="row"/>
+                <field name="name" type="row"/>
+                <field name="date"/>
+                <field name="iva_percentage"/>
+                <field name="total_amount" type="measure" widget="monetary"/>
+            </pivot>
+        </field>
+    </record> 
+
+    <record model="ir.ui.view" id="truffleapp.search_view_facturamodel">
+        <field name="name">Invoices Searches</field>
+        <field name="model">truffleapp.facturamodel</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draf" name="state" domain="[('state','!=','C')]" />
+                <filter string="Confirm" name="state" domain="[('state','!=','D')]" />
+                <filter string="History" name="active" domain="[('active','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="truffleapp.factura_action_window">
+        <field name="name">Invoice</field>
+        <field name="res_model">truffleapp.facturamodel</field>
+        <field name="view_mode">tree,form,calendar,graph,pivot</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="truffleapp.action_server">
+        <field name="name">truffleapp server</field>
+        <field name="model_id" ref="model_truffleapp_truffleapp"/>
+        <field name="state">code</field>
+        <field name="code">
+        action = {
+            "type": "ir.actions.act_window",
+            "view_mode": "tree,form",
+            "res_model": model._name,
+        }
+        </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="truffleapp" id="truffleapp.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="truffleapp.menu_1" parent="truffleapp.menu_root"/>
+    <menuitem name="Menu 2" id="truffleapp.menu_2" parent="truffleapp.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="truffleapp.menu_1_list" parent="truffleapp.menu_1"
+                action="truffleapp.action_window"/>
+    <menuitem name="Server to list" id="truffleapp" parent="truffleapp.menu_2"
+                action="truffleapp.action_server"/>
+-->
+    </data>
+</odoo>

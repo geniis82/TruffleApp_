@@ -1,0 +1,72 @@
+<odoo>
+    <data>
+    <!-- explicit list view definition -->
+
+    <record model="ir.ui.view" id="truffleapp.tree_view_qualitymodel">
+        <field name="name">Quality</field>
+        <field name="model">truffleapp.qualitymodel</field>
+        <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="category"/>
+        </tree>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="truffleapp.form_view_qualitymodel">
+        <field name="name">Quality</field>
+        <field name="model">truffleapp.qualitymodel</field>
+        <field name="arch" type="xml">
+        <form string="Quality">
+            <group>
+                <field name="name" string="Name"/>
+                <field name="category"/>
+            </group>
+        </form>
+        </field>
+    </record>
+
+
+    <!-- actions opening views on models -->
+
+    <record model="ir.actions.act_window" id="truffleapp.quality_action_window">
+        <field name="name">Quality</field>
+        <field name="res_model">truffleapp.qualitymodel</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="truffleapp.action_server">
+        <field name="name">truffleapp server</field>
+        <field name="model_id" ref="model_truffleapp_truffleapp"/>
+        <field name="state">code</field>
+        <field name="code">
+        action = {
+            "type": "ir.actions.act_window",
+            "view_mode": "tree,form",
+            "res_model": model._name,
+        }
+        </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="truffleapp" id="truffleapp.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="truffleapp.menu_1" parent="truffleapp.menu_root"/>
+    <menuitem name="Menu 2" id="truffleapp.menu_2" parent="truffleapp.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="truffleapp.menu_1_list" parent="truffleapp.menu_1"
+                action="truffleapp.action_window"/>
+    <menuitem name="Server to list" id="truffleapp" parent="truffleapp.menu_2"
+                action="truffleapp.action_server"/>
+-->
+    </data>
+</odoo>
