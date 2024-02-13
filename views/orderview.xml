@@ -22,9 +22,10 @@
         <form >
             <header>
                 <button name="changeStatusC" type="object" string="Comfirm Order" class="oe_highlight" attrs="{'invisible': ['|',('state', '==', 'C'),('state', '==', 'I')]}" confirm="Are you sure to change the state to Confirm?"/>
-                <button name="change_status_i_create_invoice" type="object" string="Invoiced Order" class="oe_highlight" attrs="{'invisible': ['|',('state', '==', 'D'),('state', '==', 'I')]}" confirm="Are you sure to change the state to Invoiced?"/>
+                <button name="change_status_i_create_invoice" type="object" groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker" string="Invoiced Order" class="oe_highlight" attrs="{'invisible': ['|',('state', '==', 'D'),('state', '==', 'I')]}" confirm="Are you sure to change the state to Invoiced?"/>
                 <field name="state" widget="statusbar"/>
-                <button name="history" type="object" string ="Send to historic" class="oe_highlight" confirm="Are you sure to move all the invoiced orders to history?" attrs="{'invisible': ['|', ('state', '=', 'D'), ('state', '=', 'C')]}"/>
+                <button name="historyInvoiced" type="object" string="Send to Invoice historic" groups="truffleapp.truffleapp_group_adm" class="oe_highlight" confirm="Are you sure to move all the invoiced orders to history?" attrs="{'invisible': ['|', ('state', 'in', ['D', 'C']), ('active', '=', False)]}"/>
+                <button name="historyConfirm" type="object" string="Send to Confirm historic" groups="truffleapp.truffleapp_group_adm" class="oe_highlight" confirm="Are you sure to move all the confirm orders to history?" attrs="{'invisible': ['|', ('state', 'in', ['D', 'I']), ('active', '=', False)]}"/>
             </header>
             <group>
                 <field name="name"/>
@@ -32,24 +33,35 @@
                 <field name="total_without_iva"/>
                 <field name="iva_percentage" attrs="{'readonly': [('state', '!=', 'D')]}"/>
                 <field name="total_amount" />
-                <field string="Products" name="orderLine" widget="one2many_tags" attrs="{'readonly': [('state', '!=', 'D')]}">
+                <field string="Products" name="orderLine" attrs="{'readonly': [('state', '!=', 'D')]}">
                     <tree>
-                        <!-- Muestra más detalles del producto en la línea de la factura -->
-                        <field name="product" options='{"fields": ["name", "price", "stock"]}'>
-                            <widget name="many2one" options='{"no_create_edit": true}'/>
-                        </field>
+                        <field name="product"/>
                         <field name="quantity"/>
                         <field name="weight"/>
                         <field name="mesure"/>
                         <field name="price_unit"/>
                         <field name="price_subtotal"/>
                     </tree>
+                    <form>
+                        <group>
+                        <!-- Muestra más detalles del producto en la línea de la factura -->
+                        <field name="product"/>
+                        <field name="quantity"/>
+                        <field name="weight"/>
+                        <field name="mesure"/>
+                        <field name="price_unit"/>
+                        <field name="price_subtotal"/>
+                        </group>
+                    </form>
                 </field>
                 <field name="client" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                <field name="invoice" attrs="{'invisible': ['|', ('state', '=', 'D'), ('state', '=', 'C')]}"/>
+                <field name="active" invisible='1'/>
             </group>
         </form>
         </field>
     </record>
+
 
     <record model="ir.ui.view" id="truffleapp.graph_view_ordermodel">
         <field name="name">Graph Orders</field>
@@ -61,7 +73,8 @@
                 <field name="total_amount" type="measure" widget="monetary"/>
             </graph>
         </field>
-    </record>  
+    </record>
+        
 
     <record model="ir.ui.view" id="truffleapp.pivot_view_ordermodel">
         <field name="name">Order pivot</field>

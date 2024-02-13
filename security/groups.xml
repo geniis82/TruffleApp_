@@ -1,0 +1,26 @@
+<odoo>
+    <record id="module_truffleapp_category" model="ir.module.category">
+        <field name="name">TruffleApp</field>
+    </record>
+
+    <!-- TruffleApp Admin Group -->
+        <record id="truffleapp_group_adm" model="res.groups">
+        <field name="name">Administrator</field>
+        <field name="category_id" ref="module_truffleapp_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- TruffleApp Worker Group -->
+    <record id="truffleapp_group_worker" model="res.groups">
+        <field name="name">Workers</field>
+        <field name="category_id" ref="module_truffleapp_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- TruffleApp Client Group -->
+    <record id="truffleapp_group_client" model="res.groups">
+        <field name="name">Clients</field>
+        <field name="category_id" ref="module_truffleapp_category"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+</odoo>

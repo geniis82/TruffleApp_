@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="template_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Invoice Report</h2>
+                        <p><strong>Invoice Number:</strong> <span t-field="o.name"/></p>
+                        <p><strong>Invoice Date:</strong> <span t-field="o.date"/></p>
+                        <p><strong>Client: </strong><span t-field="o.clients"></span></p>
+                        
+                        <table class="table table-condensed">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Quantity</th>
+                                    <th>Price Unit</th>
+                                    <th>Price without tax</th>
+                                    <th>Tax</th>
+                                    <th>Total Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="o.lines" t-as="line">
+                                    <tr>
+                                        <td><span t-field="line.product.name"/></td>
+                                        <td><span t-field="line.quantity"/></td>
+                                        <td><span t-field="line.price_unit"/>€</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="3"></td>
+                                    <td><span t-field="o.total_without_iva"/>€</td>
+                                    <td><span t-field="o.iva_percentage"/></td>
+                                    <td><span t-field="o.total_amount"/>€</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+    
+</odoo>

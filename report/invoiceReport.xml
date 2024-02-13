@@ -1,0 +1,12 @@
+<odoo>
+    <data>
+        <report 
+            id="action_invoice_report" 
+            model="truffleapp.facturamodel"
+            string="Invoice document report" 
+            report_type="qweb-pdf" 
+            name="truffleapp.template_invoice"
+            file="truffleapp.template_invoice" 
+            attachment_use="False"/>
+    </data>
+</odoo>

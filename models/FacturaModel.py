@@ -14,6 +14,7 @@ class FacturaModel(models.Model):
     state=fields.Selection(string="State:",selection=[('D','Draft'),('C','Confirmed')], default='D')
     clients= fields.Many2one('res.partner',string="Clients",required=True)
     active=fields.Boolean(default=True)
+    order=fields.One2many('truffleapp.ordermodel','invoice',string="Order")
 
     @api.depends('lines.price_subtotal', 'iva_percentage')
     def _compute_total_amount(self):
@@ -46,11 +47,11 @@ class FacturaModel(models.Model):
     
     def changeStatus(self):
         if(self.state=='D'):
-            for iinvoiced_line in self.lines:
-                if iinvoiced_line.quantity <= iinvoiced_line.product.stock:
-                    new_stock = iinvoiced_line.product.stock - iinvoiced_line.quantity
-                    iinvoiced_line.product.write({'stock': new_stock})
-                    iinvoiced_line.quantity = min(iinvoiced_line.quantity, iinvoiced_line.product.stock)
+            # for iinvoiced_line in self.lines:
+            #     if iinvoiced_line.quantity <= iinvoiced_line.product.stock:
+            #         new_stock = iinvoiced_line.product.stock - iinvoiced_line.quantity
+            #         iinvoiced_line.product.sudo().write({'stock': new_stock})
+            #         iinvoiced_line.quantity = min(iinvoiced_line.quantity, iinvoiced_line.product.stock)
             self.state = 'C'
         else:
             self.state = 'D'

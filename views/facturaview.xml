@@ -25,9 +25,9 @@
         <field name="arch" type="xml" >
             <form >
                 <header>
-                    <button name="changeStatus" type="object" string="Comfirm Invoice" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'D')]}" confirm="Are you sure to change the state?"/>
+                    <button name="changeStatus" type="object" string="Comfirm Invoice" groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'D')]}" confirm="Are you sure to change the state?"/>
                     <field name="state" widget="statusbar"/>
-                    <button name="history" type="object" string ="Send to historic" class="oe_highlight" confirm="Are you sure to move all the confirm invoiced to history?" attrs="{'invisible': [ ('state', '=', 'D')]}"/>
+                    <button name="history" type="object" string ="Send to historic" groups="truffleapp.truffleapp_group_adm" class="oe_highlight" confirm="Are you sure to move all the confirm invoiced to history?" attrs="{'invisible': ['|',('state', '==', 'D'),('active', '=', False)]}"/>
                 </header>
                 <group >
                     <field name="name"/>
@@ -36,20 +36,29 @@
                     <field name="iva_percentage" attrs="{'readonly': [('state', '!=', 'D')]}"/>
                     <field name="total_amount" />
                     <!-- <field name="lines" /> -->
-                    <field name="lines" widget="one2many_tags" attrs="{'readonly': [('state', '!=', 'D')]}">
+                    <field name="lines" attrs="{'readonly': [('state', '!=', 'D')]}">
                         <tree>
                             <!-- Muestra más detalles del producto en la línea de la factura -->
-                            <field name="product" options='{"fields": ["name", "price", "stock"]}'>
-                                <widget name="many2one" options='{"no_create_edit": true}'/>
-                            </field>
+                            <field name="product"/>
                             <field name="quantity"/>
                             <field name="weight"/>
                             <field name="mesure"/>
                             <field name="price_unit"/>
                             <field name="price_subtotal"/>
                         </tree>
+                        <form>
+                            <group>
+                                <field name="product"/>
+                                <field name="quantity"/>
+                                <field name="weight"/>
+                                <field name="mesure"/>
+                                <field name="price_unit"/>
+                                <field name="price_subtotal"/>
+                            </group>
+                        </form>
                     </field>
                     <field name="clients" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                    <field name="active" invisible='1'/>
                 </group>
             </form>
         </field>
@@ -108,6 +117,13 @@
         </field>
     </record>
 
+    <record id="action_invoice_report" model="ir.actions.report">
+        <field name="name">Invoice Report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="model">truffleapp.facturamodel</field>
+        <field name="report_name">truffleapp.template_invoice</field>
+        <field name="binding_model_id" ref="truffleapp.model_truffleapp_facturamodel"/>
+    </record>
     <!-- actions opening views on models -->
 
     <record model="ir.actions.act_window" id="truffleapp.factura_action_window">

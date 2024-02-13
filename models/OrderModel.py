@@ -8,14 +8,13 @@ class OrderModel(models.Model):
     name = fields.Integer(string='Order Number', default=lambda self: self.setRef(),readonly=True)
     data = fields.Date(string='Invoice Date', default=lambda self: datetime.today())
     orderLine = fields.One2many('truffleapp.orderlinemodel','order' ,string='Order Lines')
-    # quantity= fields.Integer(string="Quantity",required=True)
     total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True)
     iva_percentage = fields.Selection(string='IVA Percentage', selection=[('0','0%'),('4','4%'),('10','10%'),('21','21%')],default='0')
     total_without_iva = fields.Float(string='Total Amount (without IVA)', compute='_compute_total_without_iva', store=True)
     client= fields.Many2one('res.partner',string="Clients",required=True)
     state=fields.Selection(string="State:",selection=[('D','Draft'),('C','Confirmed'),('I','Invoiced')], default='D')
     active=fields.Boolean(default=True)
-    # invoice=fields.Many2one('truffleapp.facturamodel',string="Invoice",required=True)
+    invoice=fields.Many2one('truffleapp.facturamodel',string="Invoice", readonly=True)
 
     @api.depends('orderLine.price_subtotal', 'iva_percentage')
     def _compute_total_amount(self):
@@ -40,7 +39,7 @@ class OrderModel(models.Model):
                     raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
                 else: 
                     new_stock = order_line.product.stock - order_line.quantity
-                    order_line.product.write({'stock': new_stock})
+                    order_line.product.sudo().write({'stock': new_stock})
                     order_line.quantity = min(order_line.quantity, order_line.product.stock)
                     self.state = 'C'
         else:
@@ -61,8 +60,9 @@ class OrderModel(models.Model):
                 'iva_percentage': self.iva_percentage,
                 'state': 'D',  
             }
-            invoice = self.env['truffleapp.facturamodel'].create(invoice_data)
+            invoice = self.env['truffleapp.facturamodel'].sudo().create(invoice_data)
             self.state = 'I'
+            self.invoice=invoice.id
             return invoice
         else:
             self.state = 'C'
@@ -71,17 +71,6 @@ class OrderModel(models.Model):
     def create(self, values):
         if 'orderLine' not in values or not values['orderLine']:
             raise exceptions.ValidationError("You can't create an order without any line order")
-        
-        # order_lines = values.get('orderLine')
-    
-        # for order_line_data in order_lines:
-        #     product_id = order_line_data[2].get('product')
-        #     quantity = order_line_data[2].get('quantity')
-
-        #     # Verificar si hay suficiente stock
-        #     product = self.env['truffleapp.productmodel'].browse(product_id)
-        #     if quantity > product.stock:
-        #         raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
         return super(OrderModel, self).create(values)
 
     def setRef(self):
@@ -91,7 +80,13 @@ class OrderModel(models.Model):
         else:
             return result[-1]["name"]+1
         
-    def history(self):
+    def historyInvoiced(self):
         invoiced_orders = self.env['truffleapp.ordermodel'].search([('state', '=', 'I'), ('active', '=', True)])
         for order in invoiced_orders:
             order.write({'state': 'I', 'active': False})
+        
+
+    def historyConfirm(self):
+        confirm_orders=self.env['truffleapp.ordermodel'].search([('state', '=', 'C'), ('active', '=', True)])
+        for ord in confirm_orders:
+            ord.write({'state': 'C', 'active': False})
