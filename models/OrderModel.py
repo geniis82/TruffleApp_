@@ -31,12 +31,18 @@ class OrderModel(models.Model):
 
     def changeStatusC(self):
         if(self.state=='D'):
+            # order_lines = values.get('orderLine')
             for order_line in self.orderLine:
-                if order_line.quantity <= order_line.product.stock:
+                product_id=order_line.product.id
+                quantity=order_line.quantity
+                product = self.env['truffleapp.productmodel'].browse(product_id)
+                if quantity > product.stock:
+                    raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
+                else: 
                     new_stock = order_line.product.stock - order_line.quantity
                     order_line.product.write({'stock': new_stock})
                     order_line.quantity = min(order_line.quantity, order_line.product.stock)
-            self.state = 'C'
+                    self.state = 'C'
         else:
             self.state = 'D'
     
@@ -66,16 +72,16 @@ class OrderModel(models.Model):
         if 'orderLine' not in values or not values['orderLine']:
             raise exceptions.ValidationError("You can't create an order without any line order")
         
-        order_lines = values.get('orderLine')
+        # order_lines = values.get('orderLine')
     
-        for order_line_data in order_lines:
-            product_id = order_line_data[2].get('product')
-            quantity = order_line_data[2].get('quantity')
+        # for order_line_data in order_lines:
+        #     product_id = order_line_data[2].get('product')
+        #     quantity = order_line_data[2].get('quantity')
 
-            # Verificar si hay suficiente stock
-            product = self.env['truffleapp.productmodel'].browse(product_id)
-            if quantity > product.stock:
-                raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
+        #     # Verificar si hay suficiente stock
+        #     product = self.env['truffleapp.productmodel'].browse(product_id)
+        #     if quantity > product.stock:
+        #         raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
         return super(OrderModel, self).create(values)
 
     def setRef(self):
