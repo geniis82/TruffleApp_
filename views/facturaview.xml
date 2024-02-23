@@ -6,7 +6,7 @@
         <field name="name">Invoice</field>
         <field name="model">truffleapp.facturamodel</field>
         <field name="arch" type="xml">
-        <tree decoration-success="state=='C'">
+        <tree decoration-success="state=='C'" default_order='date desc'>
             <field name="name"/>
             <field name="date"/>
             <field name="total_without_iva"/>
@@ -57,7 +57,7 @@
                             </group>
                         </form>
                     </field>
-                    <field name="clients" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                    <field name="clients" readonly='1' groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker"/>
                     <field name="active" invisible='1'/>
                 </group>
             </form>
@@ -132,6 +132,12 @@
         <field name="view_mode">tree,form,calendar,graph,pivot</field>
     </record>
 
+    <record model="ir.actions.act_window" id="truffleapp.factura_action_window_client">
+        <field name="name">My Invoices</field>
+        <field name="res_model">truffleapp.facturamodel</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('clients.user_ids', '=', uid)]</field>
+    </record>
 
     <!-- server action to the one above -->
 <!--

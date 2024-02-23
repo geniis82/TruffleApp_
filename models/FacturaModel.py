@@ -6,13 +6,13 @@ class FacturaModel(models.Model):
     _description = 'Invoice Model'
 
     name = fields.Integer(string='Invoice Number', default=lambda self: self.setRef(),readonly=True)
-    date = fields.Date(string='Invoice Date', default=lambda self: datetime.today())
+    date = fields.Date(string='Invoice Date', default=lambda self: datetime.today(),readonly=True)
     lines = fields.One2many('truffleapp.facturalineamodel', 'invoice', string='Invoice Lines')
     total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True)
     iva_percentage = fields.Selection(string='IVA Percentage', selection=[('0','0%'),('4','4%'),('10','10%'),('21','21%')],default='0')
     total_without_iva = fields.Float(string='Total Amount (without IVA)', compute='_compute_total_without_iva', store=True)
     state=fields.Selection(string="State:",selection=[('D','Draft'),('C','Confirmed')], default='D')
-    clients= fields.Many2one('res.partner',string="Clients",required=True)
+    clients= fields.Many2one('res.partner',string="Clients",required=True,default=lambda self: self.env.user.partner_id.id,readonly=True)
     active=fields.Boolean(default=True)
     order=fields.One2many('truffleapp.ordermodel','invoice',string="Order")
 
@@ -40,19 +40,24 @@ class FacturaModel(models.Model):
             quantity = invoiced_lines_data[2].get('quantity')
 
             # Verificar si hay suficiente stock
-            product = self.env['truffleapp.productmodel'].browse(product_id)
-            if quantity > product.stock:
-                raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
+            # product = self.env['truffleapp.productmodel'].browse(product_id)
+            # if quantity > product.stock:
+            #     raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
         return super(FacturaModel, self).create(values)
     
     def changeStatus(self):
         if(self.state=='D'):
-            # for iinvoiced_line in self.lines:
+            for iinvoiced_line in self.lines:
+                product_id=iinvoiced_line.product.id
+                quantity=iinvoiced_line.quantity
             #     if iinvoiced_line.quantity <= iinvoiced_line.product.stock:
             #         new_stock = iinvoiced_line.product.stock - iinvoiced_line.quantity
             #         iinvoiced_line.product.sudo().write({'stock': new_stock})
             #         iinvoiced_line.quantity = min(iinvoiced_line.quantity, iinvoiced_line.product.stock)
-            self.state = 'C'
+                product = self.env['truffleapp.productmodel'].browse(product_id)
+                if quantity > product.stock:
+                    raise exceptions.ValidationError(f"The stock of product {product.name} is not available")
+                self.state = 'C'
         else:
             self.state = 'D'
 

@@ -6,12 +6,12 @@ class OrderModel(models.Model):
     _description = 'Order Model'
 
     name = fields.Integer(string='Order Number', default=lambda self: self.setRef(),readonly=True)
-    data = fields.Date(string='Invoice Date', default=lambda self: datetime.today())
+    data = fields.Date(string='Invoice Date', default=lambda self: datetime.today(),readonly=True)
     orderLine = fields.One2many('truffleapp.orderlinemodel','order' ,string='Order Lines')
     total_amount = fields.Float(string='Total Amount', compute='_compute_total_amount', store=True)
     iva_percentage = fields.Selection(string='IVA Percentage', selection=[('0','0%'),('4','4%'),('10','10%'),('21','21%')],default='0')
     total_without_iva = fields.Float(string='Total Amount (without IVA)', compute='_compute_total_without_iva', store=True)
-    client= fields.Many2one('res.partner',string="Clients",required=True)
+    client= fields.Many2one('res.partner',string="Clients",required=True, default=lambda self: self.env.user.partner_id.id,readonly=True )
     state=fields.Selection(string="State:",selection=[('D','Draft'),('C','Confirmed'),('I','Invoiced')], default='D')
     active=fields.Boolean(default=True)
     invoice=fields.Many2one('truffleapp.facturamodel',string="Invoice", readonly=True)
@@ -90,3 +90,4 @@ class OrderModel(models.Model):
         confirm_orders=self.env['truffleapp.ordermodel'].search([('state', '=', 'C'), ('active', '=', True)])
         for ord in confirm_orders:
             ord.write({'state': 'C', 'active': False})
+

@@ -6,12 +6,12 @@
         <field name="name">Orders</field>
         <field name="model">truffleapp.ordermodel</field>
         <field name="arch" type="xml">
-        <tree decoration-success="state=='C'">
-            <field name="name"/>
-            <field name="data"/>
-            <field name="client"/>
-            <field name="state"/>
-        </tree>
+            <tree decoration-success="state=='C'" default_order='data desc'>
+                <field name="name"/>
+                <field name="data"/>
+                <field name="client"/>
+                <field name="state"/>
+            </tree>
         </field>
     </record>
 
@@ -29,7 +29,7 @@
             </header>
             <group>
                 <field name="name"/>
-                <field name="data" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                <field name="data"/>
                 <field name="total_without_iva"/>
                 <field name="iva_percentage" attrs="{'readonly': [('state', '!=', 'D')]}"/>
                 <field name="total_amount" />
@@ -54,7 +54,7 @@
                         </group>
                     </form>
                 </field>
-                <field name="client" attrs="{'readonly': [('state', '!=', 'D')]}"/>
+                <field name="client"  readonly='1' groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker"/>
                 <field name="invoice" attrs="{'invisible': ['|', ('state', '=', 'D'), ('state', '=', 'C')]}"/>
                 <field name="active" invisible='1'/>
             </group>
@@ -104,13 +104,19 @@
     </record>
 
     <!-- actions opening views on models -->
-
+    
     <record model="ir.actions.act_window" id="truffleapp.order_action_window">
         <field name="name">Orders</field>
         <field name="res_model">truffleapp.ordermodel</field>
         <field name="view_mode">tree,form,graph,pivot</field>
     </record>
 
+    <record model="ir.actions.act_window" id="truffleapp.order_action_window_clients">
+        <field name="name">My Orders</field>
+        <field name="res_model">truffleapp.ordermodel</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('client.user_ids', '=', uid)]</field>
+    </record>
 
     <!-- server action to the one above -->
 <!--

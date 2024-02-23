@@ -6,22 +6,28 @@
         <!-- menu categories-->
         <menuitem name="Category" id="truffleapp.menu_category"
             parent="truffleapp.menu_root"
-            groups="truffleapp.truffleapp_group_adm"/>
+            groups="truffleapp.truffleapp_group_adm"
+            sequence="1"/>
         <menuitem name="Weight" id="truffleapp.menu_weight"
             parent="truffleapp.menu_root"
-            groups="truffleapp.truffleapp_group_adm" />
+            groups="truffleapp.truffleapp_group_adm" 
+            sequence="2"/>
         <menuitem name="Quality" id="truffleapp.menu_quality"
             parent="truffleapp.menu_root"
-            groups="truffleapp.truffleapp_group_adm" /> 
+            groups="truffleapp.truffleapp_group_adm" 
+            sequence="3"/> 
         <menuitem name="Product" id="truffleapp.menu_product"
             parent="truffleapp.menu_root"
-            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker,truffleapp.truffleapp_group_client" />
+            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker,truffleapp.truffleapp_group_client" 
+            sequence="6"/>
         <menuitem name="Order" id="truffleapp.menu_order"
             parent="truffleapp.menu_root" 
-            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker,truffleapp.truffleapp_group_client"/> 
+            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker,truffleapp.truffleapp_group_client"
+            sequence="4"/> 
         <menuitem name="Invoice" id="truffleapp.menu_factura"
             parent="truffleapp.menu_root"
-            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker" /> 
+            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker" 
+            sequence="5"/> 
         
 
         <!--Actions-->
@@ -48,12 +54,22 @@
         <menuitem name="Order" id="truffleapp.menu_order_list"
             parent="truffleapp.menu_order"
             action="truffleapp.order_action_window"
-            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker,truffleapp.truffleapp_group_client"
-            />
+            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker"
+            sequence="1"/>
+        <menuitem name="My Order" id="truffleapp.menu_order_list_client"
+            parent="truffleapp.menu_order"
+            action="truffleapp.order_action_window_clients"
+            groups="truffleapp.truffleapp_group_client"
+            sequence="2"/>
         <menuitem name="Invoice" id="truffleapp.menu_factura_list"
             parent="truffleapp.menu_factura"
             action="truffleapp.factura_action_window"
             groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker"
+            /> 
+        <menuitem name="Invoice" id="truffleapp.menu_factura_list_client"
+            parent="truffleapp.menu_factura"
+            action="truffleapp.factura_action_window_client"
+            groups="truffleapp.truffleapp_group_client"
             /> 
     </data>
 </odoo>
