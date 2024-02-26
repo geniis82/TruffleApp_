@@ -68,28 +68,18 @@ class Truffleapp(http.Controller):
         data={"status":200,"data":ordid}
         return http.Response(json.dumps(data).encode("utf8"),mimetype="application/json")
     
-    # @http.route('/truffleapp/getClients', auth='public', type="http")
-    # def getClients(self, **kw):
-    #     try:
-    #         # Obtener la lista de clientes
-    #         clients = request.env['res.partner'].sudo().search([('customer', '=', True)])
+    @http.route(['/truffleapp/getClients','/truffleapp/getClients/<int:partnerid>'], auth='public', type="http")
+    def getClients(self, partnerid=None, **kw):
+        if partnerid:
+            domain = [("id", "=", partnerid)]
+        else:
+            domain = []
+        partner_data = http.request.env["res.partner"].sudo().search_read(domain, ["id", "name"])
+        
+        data = {"status": 200, "data": partner_data}
+        return http.Response(json.dumps(data).encode("utf8"), mimetype="application/json")
 
-    #         # Formatear la respuesta
-    #         client_list = []
-    #         for client in clients:
-    #             client_list.append({
-    #                 'id': client.id,
-    #                 'name': client.name,
-    #                 # Puedes agregar más campos del cliente según sea necesario
-    #             })
-    #         data = {
-    #             "status": 200,
-    #             "clients": client_list,
-    #         }
-    #         return http.Response(json.dumps(data).encode("utf8"), mimetype="application/json")
-    #     except Exception as e:
-    #         data = {"status": 500, "error": str(e)}
-    #         return http.Response(json.dumps(data).encode("utf8"), mimetype="application/json")
+
 
 
     @http.route('/truffleapp/addOrder', auth='public', type="json", methods=["POST"])
