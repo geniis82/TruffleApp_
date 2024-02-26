@@ -146,16 +146,25 @@ class Truffleapp(http.Controller):
     def deleteOrder(self, **kw):
         response = request.httprequest.json
         try:
-            catdata = http.request.env["truffleapp.ordermodel"].sudo().search([("id", "=", response["id"])])
-            catdata.sudo().unlink()
+            order_id = response.get("id")
+            if not order_id:
+                return {"status": 400, "error": "Se requiere el ID de la orden."}
+            order = http.request.env["truffleapp.ordermodel"].sudo().browse(order_id)
+            if not order:
+                return {"status": 404, "error": f"No se encontró la orden con ID {order_id}."}
+            # Verificar el estado de la orden
+            if order.state != 'D':
+                return {"status": 400, "error": "La orden no está en estado 'Draft', no se puede eliminar."}
+            # Eliminar la orden
+            order.sudo().unlink()
             data = {
                 "status": 200,
-                "message": "orden eliminada exitosamente."
+                "message": "Orden eliminada exitosamente."
             }
         except Exception as e:
             data = {
                 "status": 404,
-                "error": str(e)  # Convertir la excepción a cadena para incluir en la respuesta
+                "error": str(e)
             }
         return data
 
