@@ -79,9 +79,6 @@ class Truffleapp(http.Controller):
         data = {"status": 200, "data": partner_data}
         return http.Response(json.dumps(data).encode("utf8"), mimetype="application/json")
 
-
-
-
     @http.route('/truffleapp/addOrder', auth='public', type="json", methods=["POST"])
     def addOrder(self, **kw):
         try:
@@ -125,8 +122,6 @@ class Truffleapp(http.Controller):
             # Actualizar la orden
             existing_order.write({
                 'iva_percentage': data.get('iva', existing_order.iva_percentage),
-                'state':data["state"]
-                # Puedes agregar más campos que desees actualizar
             })
             # Actualizar las líneas de orden
             order_lines_data = [{'product': line['product'], 'quantity': line['quantity']} for line in data['order_lines']]
@@ -141,6 +136,22 @@ class Truffleapp(http.Controller):
             }
         except Exception as e:
             return {"status": 404, "error": str(e)}
+        
+
+
+    @http.route('/truffleapp/confirmOrder/<int:order_name>', auth='public', type="http", methods=['PUT'], csrf=False)
+    def confirmOrder(self, order_name, **post):
+        try:
+            order = http.request.env['truffleapp.ordermodel'].sudo().search([('name', '=', order_name)])
+            if not order:
+                error_message = {"status": 404, "message": f"Order '{order_name}' not found."}
+                return http.Response(json.dumps(error_message).encode("utf-8"), status=404, content_type='application/json')
+            order.changeStatusC()
+            data = {"status": 200, "message": f"Order {order_name} confirmed successfully."}
+            return http.Response(json.dumps(data).encode("utf-8"), content_type='application/json')
+        except Exception as e:
+            error_message = {"status": 500, "message": str(e)}
+            return http.Response(json.dumps(error_message).encode("utf-8"), status=500, content_type='application/json')
 
     @http.route('/truffleapp/deleteOrder', auth='public', type="json", methods=["DELETE"])
     def deleteOrder(self, **kw):
