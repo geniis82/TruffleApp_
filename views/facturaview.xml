@@ -6,7 +6,7 @@
         <field name="name">Invoice</field>
         <field name="model">truffleapp.facturamodel</field>
         <field name="arch" type="xml">
-        <tree decoration-success="state=='C'" default_order='date desc'>
+        <tree decoration-success="state=='C'" decoration-info="state=='D'" default_order='date desc'>
             <field name="name"/>
             <field name="date"/>
             <field name="total_without_iva"/>

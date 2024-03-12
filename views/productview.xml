@@ -88,6 +88,14 @@
         <field name="name">Product</field>
         <field name="res_model">truffleapp.productmodel</field>
         <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'group_by':'category'}</field>
+    </record>
+
+    <record model="ir.actions.act_window" id="truffleapp.product_action_window_client">
+        <field name="name">Product</field>
+        <field name="res_model">truffleapp.productmodel</field>
+        <field name="view_mode">kanban,tree,form</field>
+        <field name="context">{'group_by':'category'}</field>
     </record>
 
 

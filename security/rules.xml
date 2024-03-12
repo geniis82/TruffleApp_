@@ -1,0 +1,9 @@
+<odoo>
+    <record id = "rulesTruffleapp" model ="ir.rule">
+        <field name="name">TruffleApp Client</field>
+        <field name="model_id" ref="model_truffleapp_categorymodel" />
+        <field name="groups" eval="[(4, ref('truffleapp_group_client'))]" />
+        <field name="perm_create" eval="False"></field>
+        <field name="domain_force">[(1,'=',1)]</field>
+    </record>
+</odoo>

@@ -6,7 +6,7 @@
         <field name="name">Orders</field>
         <field name="model">truffleapp.ordermodel</field>
         <field name="arch" type="xml">
-            <tree decoration-success="state=='C'" default_order='data desc'>
+            <tree decoration-success="state=='C'" decoration-info="state=='D'" default_order='data desc'>
                 <field name="name"/>
                 <field name="data"/>
                 <field name="client"/>
@@ -96,7 +96,7 @@
         <field name="arch" type="xml">
             <search>
                 <filter string="Draf" name="state" domain="[('state','=','D')]" />
-                <filter string="Confirm" name="state" domain="[('state','=','C')]" />
+                <filter string="Confirm" name="search_confirm" domain="[('state','=','C')]" />
                 <filter string="Invoiced" name="state" domain="[('state','=','I')]" />
                 <filter string="History" name="active" domain="[('active','=',False)]"/>
             </search>
@@ -109,12 +109,13 @@
         <field name="name">Orders</field>
         <field name="res_model">truffleapp.ordermodel</field>
         <field name="view_mode">tree,form,graph,pivot</field>
+        <field name="context"> {"search_default_search_confirm":1} </field>
     </record>
 
     <record model="ir.actions.act_window" id="truffleapp.order_action_window_clients">
         <field name="name">My Orders</field>
         <field name="res_model">truffleapp.ordermodel</field>
-        <field name="view_mode">tree,form</field>
+        <field name="view_mode">tree,form,graph,pivot</field>
         <field name="domain">[('client.user_ids', '=', uid)]</field>
     </record>
 

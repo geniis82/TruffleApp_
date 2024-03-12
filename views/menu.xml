@@ -49,7 +49,12 @@
         <menuitem name="Product" id="truffleapp.menu_product_list"
             parent="truffleapp.menu_product"
             action="truffleapp.product_action_window"
-            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker,truffleapp.truffleapp_group_client" 
+            groups="truffleapp.truffleapp_group_adm,truffleapp.truffleapp_group_worker" 
+            />  
+        <menuitem name="Product" id="truffleapp.menu_product_list_client"
+            parent="truffleapp.menu_product"
+            action="truffleapp.product_action_window_client"
+            groups="truffleapp.truffleapp_group_client" 
             />  
         <menuitem name="Order" id="truffleapp.menu_order_list"
             parent="truffleapp.menu_order"

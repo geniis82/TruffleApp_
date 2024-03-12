@@ -15,7 +15,7 @@ class ProductModel(models.Model):
     photo=fields.Binary()
     price=fields.Float(string="Price",required=True)
     stock=fields.Integer(string="Stock",required=True)
-    category=fields.Many2one("truffleapp.categorymodel",string="category",store=True,required=True)
+    category=fields.Many2one("truffleapp.categorymodel",string="Category",store=True,required=True)
     path_category=fields.Char(string="Category Path", related='category.category_path',store=True)
     weight = fields.Many2one("truffleapp.weightmodel", string="Weight", domain="[('category', '=', category)]")
     mesure= fields.Char(string="Measure",  store=True, String = "Mesure", )

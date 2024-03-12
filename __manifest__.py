@@ -34,6 +34,7 @@
         'views/orderview.xml',
         'views/invoiceTemplate.xml',
         'report/invoiceReport.xml',
+        'security/rules.xml',
         'views/menu.xml',
     ],
     # only loaded in demonstration mode
